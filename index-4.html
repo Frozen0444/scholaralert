@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#6d5dfc">
+<link rel="manifest" href="manifest.webmanifest">
+<title>ScholarAlert</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--text:#161827;--muted:#697086;--primary:#6d5dfc;--soft:#eeeafd;--line:#e6e8ef;--good:#14845b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+button,input,select{font:inherit}header{position:sticky;top:0;z-index:5;background:rgba(246,247,251,.94);backdrop-filter:blur(14px);padding:16px 18px 10px;border-bottom:1px solid var(--line)}
+.top{display:flex;justify-content:space-between;align-items:center;max-width:850px;margin:auto}.logo{font-size:22px;font-weight:800}.logo span{color:var(--primary)}
+.top-actions{display:flex;gap:8px;align-items:center}.bell,.account{border:0;background:var(--card);border-radius:14px;padding:10px;box-shadow:0 2px 12px #0000000b}
+.account{font-size:12px;font-weight:700;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tabs{display:flex;gap:7px;max-width:850px;margin:12px auto 0;overflow:auto}.tab{border:0;background:transparent;padding:9px 13px;border-radius:12px;color:var(--muted);white-space:nowrap}.tab.active{background:var(--soft);color:var(--primary);font-weight:700}
+.wrap{max-width:850px;margin:auto;padding:18px}.hero{background:linear-gradient(135deg,#6d5dfc,#8b7fff);color:white;border-radius:24px;padding:22px;box-shadow:0 12px 35px #6d5dfc2b}.hero h1{margin:0 0 7px;font-size:26px}.hero p{margin:0 0 18px;opacity:.9}
+.btn{border:0;border-radius:13px;padding:12px 16px;font-weight:750;cursor:pointer}.btn.primary{background:var(--primary);color:white}.btn.light{background:white;color:var(--primary)}.btn.gray{background:#eef0f5;color:#333}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:16px 0}.stat,.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}.stat b{display:block;font-size:25px}.muted{color:var(--muted)}
+.section{display:flex;justify-content:space-between;align-items:center;margin:22px 0 10px}.section h2{font-size:18px;margin:0}.sch{margin-bottom:12px}.sch h3{margin:0 0 6px;font-size:17px}.chips{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0}.chip{font-size:12px;padding:5px 8px;border-radius:999px;background:#f0f1f6;color:#555d72}.chip.match{background:#e6f7ef;color:var(--good)}
+.deadline{font-weight:750}.actions{display:flex;gap:8px;margin-top:13px}.actions .btn{flex:1}.search{width:100%;padding:13px 15px;border:1px solid var(--line);border-radius:14px;background:white;outline:none}
+.form{display:grid;gap:12px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}.field input,.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.empty{text-align:center;padding:35px 15px}.small{font-size:12px}.hide{display:none!important}
+.notice{padding:11px 13px;border-radius:12px;background:#fff8df;margin:10px 0;font-size:13px}.signed{background:#e6f7ef;color:#14845b}.error{background:#ffecef;color:#b52f42}
+@media(max-width:560px){.grid{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}.wrap{padding:14px}.hero{padding:19px}.account{max-width:120px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div class="logo">Scholar<span>Alert</span> 🎓</div>
+    <div class="top-actions">
+      <button id="accountBtn" class="account" onclick="handleAccount()">🔐 Sign in</button>
+      <button class="bell" onclick="notifyMe()">🔔</button>
+    </div>
+  </div>
+  <nav class="tabs">
+    <button class="tab active" data-page="home">Home</button>
+    <button class="tab" data-page="all">All Scholarships</button>
+    <button class="tab" data-page="saved">Saved</button>
+    <button class="tab" data-page="profile">My Profile</button>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section id="home"></section>
+  <section id="all" class="hide"></section>
+  <section id="saved" class="hide"></section>
+  <section id="profile" class="hide"></section>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAYoXCT_BkiAq8Y09scgVHRWkfglvQtjiU",
+  authDomain: "scholaralet.firebaseapp.com",
+  projectId: "scholaralet",
+  storageBucket: "scholaralet.firebasestorage.app",
+  messagingSenderId: "25551041821",
+  appId: "1:25551041821:web:718f189ac3012c75661df4",
+  measurementId: "G-6SV062GDBJ"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
+
+const NSP='https://scholarships.gov.in/All-Scholarships';
+const scholarships=[
+{id:1,name:'AICTE – Swanath Scholarship Scheme (Technical Degree)',org:'AICTE',type:'Welfare',course:'degree',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['Engineering','Technical Degree','AICTE'],url:NSP,reason:'For eligible students in technical degree programmes; verify the welfare conditions on the official portal.'},
+{id:2,name:'AICTE – Pragati Scholarship Scheme for Girl Students (Technical Degree)',org:'AICTE',type:'Merit',course:'degree',gender:'female',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['Engineering','Girl Students','AICTE'],url:NSP,reason:'For eligible girl students in technical degree programmes; scheme conditions apply.'},
+{id:3,name:'AICTE – Saksham Scholarship Scheme for Specially Abled Student (Technical Degree)',org:'AICTE',type:'Welfare',course:'degree',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['Engineering','Disability','AICTE'],url:NSP,reason:'For eligible specially abled students in technical degree programmes; verify conditions.'},
+{id:4,name:'PM YASASVI – Top Class Education in College for OBC, EBC and DNT Students',org:'Social Justice & Empowerment',type:'Merit',course:'degree',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['OBC','EBC','DNT','College'],url:NSP,reason:'Potential match for eligible OBC/EBC/DNT college students; income and other conditions apply.'},
+{id:5,name:'Central Sector Scholarship of Top Class Education for SC Students',org:'Social Justice & Empowerment',type:'Merit',course:'degree',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['SC','College'],url:NSP,reason:'Potential match for eligible SC students; institute and other conditions apply.'},
+{id:6,name:'National Fellowship and Scholarship for Higher Education of ST Students',org:'Tribal Affairs',type:'Merit',course:'degree',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['ST','Higher Education'],url:NSP,reason:'Potential match for eligible ST students; scheme conditions apply.'},
+{id:7,name:'Post Matric Scholarship for Students with Disabilities',org:'Department of Empowerment of Persons with Disabilities',type:'Welfare',course:'any',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['Disability','Post Matric'],url:NSP,reason:'Potential match for eligible students with disabilities.'},
+{id:8,name:'Financial Assistance for Education to Wards of Beedi/Cine/IOMC/LSDM – Post Matric',org:'Ministry of Labour & Employment',type:'Welfare',course:'any',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['Post Matric','Wards'],url:NSP,reason:'Potential match where the applicable parent/guardian employment condition is met.'}
+];
+
+let profile=JSON.parse(localStorage.getItem('sa_profile')||'null')||{name:'',course:'degree',year:'1',branch:'CSE',state:'Karnataka',gender:'',category:'',income:'',disability:false};
+let saved=JSON.parse(localStorage.getItem('sa_saved')||'[]');
+let currentUser=null;
+
+const $=s=>document.querySelector(s);
+function saveLocal(){localStorage.setItem('sa_profile',JSON.stringify(profile));localStorage.setItem('sa_saved',JSON.stringify(saved));}
+function days(d){return Math.ceil((new Date(d+'T23:59:59')-new Date())/86400000)}
+function matches(s){
+  if(s.course!=='any'&&profile.course&&s.course!==profile.course)return false;
+  if(s.gender!=='any'&&profile.gender&&s.gender!==profile.gender)return false;
+  if(s.tags.some(x=>['SC','OBC','EBC','DNT','ST'].includes(x))&&profile.category&&!s.tags.includes(profile.category))return false;
+  if(s.tags.includes('Disability')&&!profile.disability)return false;
+  return true;
+}
+function card(s){
+  let d=days(s.deadline),match=matches(s);
+  return `<article class="card sch"><h3>${s.name}</h3><div class="muted">${s.org}</div><div class="chips">${s.tags.map(x=>`<span class="chip">${x}</span>`).join('')} ${match?'<span class="chip match">✓ Matches your profile</span>':''}</div><div class="deadline">📅 ${d>=0?`Apply by 31 Oct 2026 · ${d} day${d===1?'':'s'} left`:'Deadline passed'}</div><div class="muted small">${s.amount}</div><div class="actions"><button class="btn light" onclick="toggleSave(${s.id})">${saved.includes(s.id)?'★ Saved':'☆ Save'}</button><button class="btn primary" onclick="window.open('${s.url}','_blank')">Official site ↗</button></div></article>`
+}
+function home(){
+  let ms=scholarships.filter(matches);
+  let loginNotice=currentUser?`<div class="notice signed">✓ Signed in as ${currentUser.displayName||currentUser.email}</div>`:`<div class="notice">Sign in with Google to keep your profile available across devices.</div>`;
+  $('#home').innerHTML=`<div class="hero"><h1>Scholarships that match you.</h1><p>Set your profile once. ScholarAlert filters scholarships and highlights deadlines.</p><button class="btn light" onclick="show('profile')">Complete my profile →</button></div>${loginNotice}<div class="grid"><div class="stat"><span class="muted">Possible matches</span><b>${ms.length}</b></div><div class="stat"><span class="muted">Saved</span><b>${saved.length}</b></div></div><div class="section"><h2>For you</h2><span class="muted small">Scholarship discovery data</span></div>${ms.length?ms.map(card).join(''):`<div class="card empty"><b>Complete your profile</b><p class="muted">Add your details to improve matching.</p></div>`}<div class="card small muted">Always verify eligibility, amount and deadline on the official scholarship portal before applying.</div>`
+}
+function all(){
+  let q=($('#q')?.value||'').toLowerCase();
+  let arr=scholarships.filter(s=>(s.name+s.org+s.tags.join(' ')).toLowerCase().includes(q));
+  $('#all').innerHTML=`<input id="q" class="search" placeholder="Search scholarships…" value="${q}" oninput="all()"><div class="section"><h2>${arr.length} scholarships</h2></div>${arr.map(card).join('')}`
+}
+function savedPage(){
+  let arr=scholarships.filter(s=>saved.includes(s.id));
+  $('#saved').innerHTML=`<div class="section"><h2>Saved scholarships</h2></div>${arr.length?arr.map(card).join(''):`<div class="card empty"><b>No saved scholarships yet</b><p class="muted">Tap Save on a scholarship you want to remember.</p></div>`}`
+}
+function profilePage(){
+  let p=profile;
+  $('#profile').innerHTML=`<div class="card"><h2>My profile</h2><p class="muted">${currentUser?'This profile is linked to your Google account.':'Sign in to sync your profile across devices.'}</p><div class="form">
+  <div class="field"><label>Name</label><input id="name" value="${p.name||''}" placeholder="Your name"></div>
+  <div class="two"><div class="field"><label>Course</label><select id="course"><option value="degree" ${p.course==='degree'?'selected':''}>Degree (B.E./B.Tech etc.)</option><option value="diploma" ${p.course==='diploma'?'selected':''}>Diploma</option><option value="pg" ${p.course==='pg'?'selected':''}>Postgraduate</option></select></div><div class="field"><label>Year</label><select id="year">${[1,2,3,4,5].map(x=>`<option ${p.year==x?'selected':''}>${x}</option>`).join('')}</select></div></div>
+  <div class="two"><div class="field"><label>Branch</label><input id="branch" value="${p.branch||''}" placeholder="CSE"></div><div class="field"><label>State</label><input id="state" value="${p.state||''}" placeholder="Karnataka"></div></div>
+  <div class="two"><div class="field"><label>Gender (optional)</label><select id="gender"><option value="">Prefer not to say</option><option value="male" ${p.gender==='male'?'selected':''}>Male</option><option value="female" ${p.gender==='female'?'selected':''}>Female</option></select></div><div class="field"><label>Category (optional)</label><select id="category"><option value="">Not specified</option><option ${p.category==='SC'?'selected':''}>SC</option><option ${p.category==='ST'?'selected':''}>ST</option><option ${p.category==='OBC'?'selected':''}>OBC</option><option ${p.category==='EBC'?'selected':''}>EBC</option><option ${p.category==='DNT'?'selected':''}>DNT</option></select></div></div>
+  <label><input type="checkbox" id="disability" ${p.disability?'checked':''}> I may qualify for disability-specific scholarships</label>
+  <button class="btn primary" onclick="saveProfile()">Save profile</button>
+  <button class="btn gray" onclick="notifyMe()">Enable notifications 🔔</button>
+  </div></div>
+  <div class="card small muted" style="margin-top:12px">Your Google account identifies your profile. Scholarship eligibility must always be verified on the official scheme page.</div>`
+}
+async function saveProfile(){
+  profile={name:$('#name').value.trim(),course:$('#course').value,year:$('#year').value,branch:$('#branch').value.trim(),state:$('#state').value.trim(),gender:$('#gender').value,category:$('#category').value,income:'',disability:$('#disability').checked};
+  saveLocal();
+  if(currentUser){
+    try{
+      await setDoc(doc(db,'users',currentUser.uid),{profile,displayName:currentUser.displayName||'',email:currentUser.email||'',updatedAt:new Date().toISOString()},{merge:true});
+      alert('Profile saved to your account ✓');
+    }catch(e){
+      console.error(e);
+      alert('Profile saved on this device, but Firebase could not save it yet. Check Firestore Rules.');
+    }
+  }else{
+    alert('Profile saved on this device. Sign in with Google to sync it across devices.');
+  }
+  render();show('home');
+}
+function toggleSave(id){saved.includes(id)?saved=saved.filter(x=>x!==id):saved.push(id);saveLocal();render()}
+async function notifyMe(){
+  if(!('Notification'in window)){alert('Notifications are not supported in this browser. Try Chrome.');return}
+  let p=await Notification.requestPermission();
+  if(p==='granted')new Notification('ScholarAlert is on 🔔',{body:'Notification permission is enabled. Automatic scholarship alerts will be connected in the next notification setup.'});
+  else alert('Notification permission was not granted.');
+}
+async function handleAccount(){
+  if(currentUser){
+    try{
+      await signOut(auth);
+      alert('Signed out.');
+    }catch(e){
+      console.error(e);
+      alert('Could not sign out: '+(e.message||e.code));
+    }
+    return;
+  }
+  try{
+    await signInWithPopup(auth,googleProvider);
+  }catch(e){
+    console.error(e);
+    alert('Google sign-in could not start: '+(e.message||e.code));
+  }
+}
+async function loadCloudProfile(user){
+  try{
+    const snap=await getDoc(doc(db,'users',user.uid));
+    if(snap.exists()&&snap.data().profile){
+      profile={...profile,...snap.data().profile};
+      saveLocal();
+    }
+  }catch(e){console.warn('Could not load Firestore profile:',e)}
+}
+function updateAccountButton(){
+  const b=$('#accountBtn');
+  if(currentUser)b.textContent='👤 '+(currentUser.displayName||currentUser.email||'Account');
+  else b.textContent='🔐 Sign in';
+}
+function show(page){
+  document.querySelectorAll('main>section').forEach(x=>x.classList.add('hide'));
+  $('#'+page).classList.remove('hide');
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.page===page));
+  if(page==='home')home();if(page==='all')all();if(page==='saved')savedPage();if(page==='profile')profilePage();
+}
+function render(){home();all();savedPage();profilePage();updateAccountButton()}
+document.querySelectorAll('.tab').forEach(x=>x.onclick=()=>show(x.dataset.page));
+
+
+onAuthStateChanged(auth,async user=>{
+  currentUser=user;
+  if(user) await loadCloudProfile(user);
+  render();
+});
+
+Object.assign(window,{show,all,savedPage,profilePage,saveProfile,toggleSave,notifyMe,handleAccount});
+render();
+</script>
+</body>
+</html>
