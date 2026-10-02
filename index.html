@@ -26,4 +26,24 @@ function toggleSave(id){saved.includes(id)?saved=saved.filter(x=>x!==id):saved.p
 async function notifyMe(){if(!('Notification'in window)){alert('Notifications are not supported in this browser. Try Chrome.');return}let p=await Notification.requestPermission();if(p==='granted'){new Notification('ScholarAlert is on 🔔',{body:'You can now receive scholarship alerts when notification support is connected.'});}else alert('Notification permission was not granted.');}
 function show(page){document.querySelectorAll('main>section').forEach(x=>x.classList.add('hide'));$('#'+page).classList.remove('hide');document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.page===page));if(page==='home')home();if(page==='all')all();if(page==='saved')savedPage();if(page==='profile')profilePage();}
 function render(){home();all();savedPage();profilePage()}document.querySelectorAll('.tab').forEach(x=>x.onclick=()=>show(x.dataset.page));render();
-</script></body></html>
+</script></body></html><script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDW8xCDPWKj4fTzB4tugBFLcnlOuZP424",
+  authDomain: "scholaralert.firebaseapp.com",
+  projectId: "scholaralert",
+  storageBucket: "scholaralert.firebasestorage.app",
+  messagingSenderId: "25551041821",
+  appId: "1:25551041821:web:718f89ac3012c75661df4",
+  measurementId: "G-6SV062GDBJ"
+};
+
+const scholarAlertApp = initializeApp(firebaseConfig);
+const scholarAlertAuth = getAuth(scholarAlertApp);
+const scholarAlertDB = getFirestore(scholarAlertApp);
+
+console.log("ScholarAlert Firebase connected!");
+</script>
