@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#6d5dfc">
+<link rel="manifest" href="manifest.webmanifest">
+<title>ScholarAlert — Scholarships for Every Education Level</title>
+<style>
+:root{--bg:#f6f7fb;--card:#fff;--text:#161827;--muted:#697086;--primary:#6d5dfc;--soft:#eeeafd;--line:#e6e8ef;--good:#14845b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+button,input,select{font:inherit}header{position:sticky;top:0;z-index:5;background:rgba(246,247,251,.94);backdrop-filter:blur(14px);padding:16px 18px 10px;border-bottom:1px solid var(--line)}
+.top{display:flex;justify-content:space-between;align-items:center;max-width:850px;margin:auto}.logo{font-size:22px;font-weight:800}.logo span{color:var(--primary)}
+.top-actions{display:flex;gap:8px;align-items:center}.bell,.account{border:0;background:var(--card);border-radius:14px;padding:10px;box-shadow:0 2px 12px #0000000b}
+.account{font-size:12px;font-weight:700;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tabs{display:flex;gap:7px;max-width:850px;margin:12px auto 0;overflow:auto}.tab{border:0;background:transparent;padding:9px 13px;border-radius:12px;color:var(--muted);white-space:nowrap}.tab.active{background:var(--soft);color:var(--primary);font-weight:700}
+.wrap{max-width:850px;margin:auto;padding:18px}.hero{background:linear-gradient(135deg,#6d5dfc,#8b7fff);color:white;border-radius:24px;padding:22px;box-shadow:0 12px 35px #6d5dfc2b}.hero h1{margin:0 0 7px;font-size:26px}.hero p{margin:0 0 18px;opacity:.9}
+.btn{border:0;border-radius:13px;padding:12px 16px;font-weight:750;cursor:pointer}.btn.primary{background:var(--primary);color:white}.btn.light{background:white;color:var(--primary)}.btn.gray{background:#eef0f5;color:#333}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:16px 0}.stat,.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}.stat b{display:block;font-size:25px}.muted{color:var(--muted)}
+.section{display:flex;justify-content:space-between;align-items:center;margin:22px 0 10px}.section h2{font-size:18px;margin:0}.sch{margin-bottom:12px}.sch h3{margin:0 0 6px;font-size:17px}.chips{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0}.chip{font-size:12px;padding:5px 8px;border-radius:999px;background:#f0f1f6;color:#555d72}.chip.match{background:#e6f7ef;color:var(--good)}
+.deadline{font-weight:750}.actions{display:flex;gap:8px;margin-top:13px}.actions .btn{flex:1}.search{width:100%;padding:13px 15px;border:1px solid var(--line);border-radius:14px;background:white;outline:none}
+.form{display:grid;gap:12px}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}.field input,.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.empty{text-align:center;padding:35px 15px}.small{font-size:12px}.hide{display:none!important}
+.notice{padding:11px 13px;border-radius:12px;background:#fff8df;margin:10px 0;font-size:13px}.state-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}.state-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}.state-card h3{margin:0 0 6px;font-size:16px}.state-card p{font-size:13px;color:var(--muted);margin:0 0 12px}.state-card a{display:inline-block;margin:4px 8px 0 0;color:var(--primary);font-weight:700;text-decoration:none}.state-filters{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.state-filters select,.state-filters input{min-width:0;width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}@media(max-width:560px){.state-grid{grid-template-columns:1fr}.state-filters{grid-template-columns:1fr}}.docs-panel{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:13px;background:#fafaff}.docs-panel summary{font-weight:750;cursor:pointer}.docs-panel ul{padding-left:20px;line-height:1.6}.docs-panel li{margin:5px 0}.signed{background:#e6f7ef;color:#14845b}.error{background:#ffecef;color:#b52f42}
+.avatar{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:30px;background:#f1efff;border:2px solid #e6e0ff;margin-bottom:8px}.avatar-row{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 16px}.avatar-choice{width:54px;height:54px;border-radius:50%;border:2px solid #e6e8ef;background:#fff;font-size:28px;cursor:pointer}.avatar-choice.selected{border-color:var(--primary);background:#eeeaff;box-shadow:0 0 0 2px #dcd5ff}.profile-head{display:flex;align-items:center;gap:14px;margin-bottom:12px}.profile-head h2{margin:0}.profile-head p{margin:3px 0 0}.account-avatar{font-size:22px;margin-right:4px}@media(max-width:560px){.grid{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}.wrap{padding:14px}.hero{padding:19px}.account{max-width:120px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div class="logo">Scholar<span>Alert</span> 🎓</div>
+    <div class="top-actions">
+      <button id="accountBtn" class="account" onclick="handleAccount()">🔐 Sign in</button>
+      <button class="bell" onclick="notifyMe()">🔔</button>
+    </div>
+  </div>
+  <nav class="tabs">
+    <button class="tab active" data-page="home">Home</button>
+    <button class="tab" data-page="all">All Scholarships</button>
+    <button class="tab" data-page="states">State Portals</button>
+    <button class="tab" data-page="saved">Saved</button>
+    <button class="tab" data-page="profile">My Profile</button>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section id="home"></section>
+  <section id="all" class="hide"></section>
+  <section id="states" class="hide"></section>
+  <section id="saved" class="hide"></section>
+  <section id="profile" class="hide"></section>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAYoXCT_BkiAq8Y09scgVHRWkfglvQtjiU",
+  authDomain: "scholaralet.firebaseapp.com",
+  projectId: "scholaralet",
+  storageBucket: "scholaralet.firebasestorage.app",
+  messagingSenderId: "25551041821",
+  appId: "1:25551041821:web:718f189ac3012c75661df4",
+  measurementId: "G-6SV062GDBJ"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
+
+const NSP='https://scholarships.gov.in/All-Scholarships';
+const STATE_SCHEME_DIRECTORY='https://scholarships.gov.in/centralsOrsponsoredOrstate';
+const GOV_SERVICES='https://services.india.gov.in/service/listing?cat_id=66&ln=en';
+const statePortals=[
+['Andhra Pradesh','https://jnanabhumi.ap.gov.in/','Andhra Pradesh Jnanabhumi portal'],
+['Arunachal Pradesh',null,'Use official NSP State Scheme directory'],
+['Assam',null,'Use official NSP State Scheme directory'],
+['Bihar','https://pmsonline.bih.nic.in/','Post Matric Scholarship Online'],
+['Chhattisgarh',null,'Use official NSP State Scheme directory'],
+['Goa',null,'Use official NSP State Scheme directory'],
+['Gujarat','https://www.digitalgujarat.gov.in/','Digital Gujarat services portal'],
+['Haryana',null,'Use official NSP State Scheme directory'],
+['Himachal Pradesh',null,'Use official NSP State Scheme directory'],
+['Jharkhand',null,'Use official NSP State Scheme directory'],
+['Karnataka','https://ssp.postmatric.karnataka.gov.in/','State Scholarship Portal (Post-Matric)'],
+['Kerala','https://egrantz.kerala.gov.in/','e-Grantz scholarship portal'],
+['Madhya Pradesh','https://scholarshipportal.mp.nic.in/','MP Scholarship Portal'],
+['Maharashtra','https://mahadbt2.maharashtra.gov.in/','MahaDBT 2.0 — state benefits portal'],
+['Manipur',null,'Use official NSP State Scheme directory'],
+['Meghalaya',null,'Use official NSP State Scheme directory'],
+['Mizoram',null,'Use official NSP State Scheme directory'],
+['Nagaland',null,'Use official NSP State Scheme directory'],
+['Odisha','https://scholarship.odisha.gov.in/','Odisha State Scholarship Portal'],
+['Punjab',null,'Use official NSP State Scheme directory'],
+['Rajasthan',null,'Use official NSP State Scheme directory'],
+['Sikkim',null,'Use official NSP State Scheme directory'],
+['Tamil Nadu',null,'Use official NSP State Scheme directory'],
+['Telangana','https://telanganaepass.cgg.gov.in/Scholarships.do','Telangana ePASS scholarships'],
+['Tripura',null,'Use official NSP State Scheme directory'],
+['Uttar Pradesh','https://scholarship.up.gov.in/','UP Scholarship and Fee Reimbursement'],
+['Uttarakhand',null,'Use official NSP State Scheme directory'],
+['West Bengal','https://oasis.gov.in/','OASIS portal — verify scheme scope'],
+['Andaman and Nicobar Islands',null,'Use official NSP State Scheme directory'],
+['Chandigarh',null,'Use official NSP State Scheme directory'],
+['Dadra and Nagar Haveli and Daman and Diu',null,'Use official NSP State Scheme directory'],
+['Delhi',null,'Use official NSP State Scheme directory'],
+['Jammu and Kashmir',null,'Use official NSP State Scheme directory'],
+['Ladakh',null,'Use official NSP State Scheme directory'],
+['Lakshadweep',null,'Use official NSP State Scheme directory'],
+['Puducherry',null,'Use official NSP State Scheme directory']
+];
+const scholarships=[
+{id:1,name:'AICTE – Swanath Scholarship Scheme (Technical Degree)',org:'AICTE',type:'Welfare',course:'degree',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['Engineering','Technical Degree','AICTE'],url:NSP,reason:'For eligible students in technical degree programmes; verify the welfare conditions on the official portal.'},
+{id:2,name:'AICTE – Pragati Scholarship Scheme for Girl Students (Technical Degree)',org:'AICTE',type:'Merit',course:'degree',gender:'female',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['Engineering','Girl Students','AICTE'],url:NSP,reason:'For eligible girl students in technical degree programmes; scheme conditions apply.'},
+{id:3,name:'AICTE – Saksham Scholarship Scheme for Specially Abled Student (Technical Degree)',org:'AICTE',type:'Welfare',course:'degree',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['Engineering','Disability','AICTE'],url:NSP,reason:'For eligible specially abled students in technical degree programmes; verify conditions.'},
+{id:4,name:'PM YASASVI – Top Class Education in College for OBC, EBC and DNT Students',org:'Social Justice & Empowerment',type:'Merit',course:'degree',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['OBC','EBC','DNT','College'],url:NSP,reason:'Potential match for eligible OBC/EBC/DNT college students; income and other conditions apply.'},
+{id:5,name:'Central Sector Scholarship of Top Class Education for SC Students',org:'Social Justice & Empowerment',type:'Merit',course:'degree',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['SC','College'],url:NSP,reason:'Potential match for eligible SC students; institute and other conditions apply.'},
+{id:6,name:'National Fellowship and Scholarship for Higher Education of ST Students',org:'Tribal Affairs',type:'Merit',course:'degree',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['ST','Higher Education'],url:NSP,reason:'Potential match for eligible ST students; scheme conditions apply.'},
+{id:7,name:'Post Matric Scholarship for Students with Disabilities',org:'Department of Empowerment of Persons with Disabilities',type:'Welfare',course:'any',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['Disability','Post Matric'],url:NSP,reason:'Potential match for eligible students with disabilities.'},
+{id:8,name:'Financial Assistance for Education to Wards of Beedi/Cine/IOMC/LSDM – Post Matric',org:'Ministry of Labour & Employment',type:'Welfare',course:'any',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['Post Matric','Wards'],url:NSP,reason:'Potential match where the applicable parent/guardian employment condition is met.'},
+{id:9,name:'PM YASASVI – Top Class Education in Schools for OBC, EBC and DNT Students',org:'Social Justice & Empowerment',type:'Merit',course:'school',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['OBC','EBC','DNT','School'],url:NSP,reason:'For eligible school students in the specified categories; class, income and other conditions apply.'},
+{id:10,name:'National Scholarship for Post Graduate Studies',org:'UGC',type:'Merit',course:'pg',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['Postgraduate','UGC'],url:NSP,reason:'For eligible postgraduate students; confirm age, admission, institution and other conditions.'},
+{id:11,name:'ICAR Junior Research Fellowships (JRF)',org:'Department of Agricultural Research and Education',type:'Merit',course:'phd',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['Research','ICAR','Fellowship'],url:NSP,reason:'Research fellowship listing; confirm the current call, discipline and eligibility on the official portal.'},
+{id:12,name:"AICTE – Swanath Scholarship Scheme (Technical Diploma)",org:'AICTE',type:'Welfare',course:'diploma',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['Diploma','Technical','AICTE','Welfare'],url:NSP,reason:'For eligible students in technical diploma programmes; specific welfare conditions apply.',docs:['Identity proof and photograph','Current technical diploma admission proof','Previous academic marksheet','Income or family-status documents required by the scheme','Bank account details and any AICTE/NSP forms required']},
+{id:13,name:"AICTE – Pragati Scholarship Scheme for Girl Students (Technical Diploma)",org:'AICTE',type:'Merit',course:'diploma',gender:'female',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['Diploma','Girl Students','AICTE'],url:NSP,reason:'For eligible girl students in technical diploma programmes; verify admission, family-income and other scheme conditions.',docs:['Identity proof and photograph','Current technical diploma admission proof','Previous academic marksheet','Family income certificate if required','Bank details and scheme-specific declaration/forms']},
+{id:14,name:'AICTE – Saksham Scholarship Scheme (Technical Diploma)',org:'AICTE',type:'Welfare',course:'diploma',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['Diploma','Disability','AICTE'],url:NSP,reason:'For eligible specially-abled students in technical diploma programmes; check the disability and admission criteria.',docs:['Identity proof and photograph','Current technical diploma admission proof','Previous academic marksheet','Valid disability certificate as specified by the scheme','Bank details and scheme-specific forms']},
+{id:15,name:"PM-USP Special Scholarship Scheme for Jammu & Kashmir and Ladakh",org:'Ministry of Education',type:'Merit',course:'degree',gender:'any',state:'any',deadline:'2026-10-31',deadlineNote:'Current NSP listing is for renewal applications; confirm whether a fresh call is available.',amount:'See official scheme',tags:['UG','Jammu & Kashmir','Ladakh','Renewal listing'],url:NSP,reason:'For eligible students from Jammu & Kashmir and Ladakh pursuing approved higher-education courses; current listing is renewal-focused.',docs:['Domicile/residency proof as required','Current admission and institute details','Previous-year marksheet','Fee receipt','Bank details and scheme-specific renewal records']},
+{id:16,name:'Ishan Uday Special Scholarship Scheme for North Eastern Region',org:'UGC',type:'Merit',course:'degree',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['UG','North East','UGC'],url:NSP,reason:'For eligible first-year undergraduate students from the North Eastern Region; domicile, income and admission rules apply.',docs:['North Eastern Region domicile certificate','Class XII marksheet','First-year admission proof','Family income certificate if required','Bank details and NSP registration information']},
+{id:17,name:'Financial Assistance to Wards of Beedi/Cine/IOMC/LSDM Workers – Pre-Matric',org:'Ministry of Labour & Employment',type:'Welfare',course:'school',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['School','Pre-Matric','Worker Families'],url:NSP,reason:'For eligible school students whose parent/guardian meets the specified worker-sector conditions.',docs:['Student identity and school enrolment proof','Previous class marksheet if required','Parent/guardian employment proof for the listed sector','Bank details if required','Any scheme-specific certificate/form']},
+{id:18,name:'PM YASASVI – Top Class Education in Schools for OBC, EBC and DNT Students',org:'Department of Social Justice & Empowerment',type:'Merit',course:'school',gender:'any',state:'any',deadline:'2026-10-31',deadlineNote:'The current NSP listing identifies renewal applications; check the portal for fresh-call status.',amount:'See official scheme',tags:['School','OBC','EBC','DNT','Renewal listing'],url:NSP,reason:'For eligible students in the specified categories at notified schools; class, income, school and renewal conditions apply.',docs:['Category/community certificate','Income certificate','Current school enrolment proof','Previous class marksheet','Bank details and scheme-specific renewal records']},
+{id:19,name:'Pre-Matric Scholarship for Students with Disabilities (Classes IX–X)',org:'Department of Empowerment of Persons with Disabilities',type:'Welfare',course:'school',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['School','Classes IX–X','Disability'],url:NSP,reason:'For eligible students with benchmark disabilities in the covered classes; disability percentage, income and school criteria apply.',docs:['Valid disability certificate as specified by the scheme','Class IX/X enrolment proof','Previous class marksheet if required','Family income certificate','Bank details and scheme-specific application documents']},
+{id:20,name:'Scholarship for Top Class Education for Students with Disabilities',org:'Department of Empowerment of Persons with Disabilities',type:'Welfare',course:'any',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['Higher Education','Disability'],url:NSP,reason:'For eligible students with disabilities studying in covered institutions/courses; verify institution, disability and income rules.',docs:['Valid disability certificate','Current admission proof from the covered institution/course','Previous academic marksheets','Income certificate if required','Fee receipt, bank details and scheme-specific forms']},
+{id:21,name:'National Means-cum-Merit Scholarship (NMMSS)',org:'Department of School Education & Literacy',type:'Merit',course:'school',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['School','Merit','Classes IX–XII'],url:NSP,reason:'A school scholarship selected through the state/UT examination process; class, marks, school type and income conditions apply.',docs:['Class VII marksheet for selection-stage eligibility if applicable','Current school enrolment details','Income certificate','Caste/category certificate only if applicable','Bank details and state/UT examination or renewal records']},
+{id:22,name:'PM-USP Central Sector Scheme of Scholarship for College and University Students (CSSS)',org:'Department of Higher Education',type:'Merit',course:'degree',gender:'any',state:'any',deadline:'2026-10-31',deadlineNote:'The current NSP announcement specifically mentions renewal applications; verify fresh-call availability.',amount:'See official scheme',tags:['UG','College','Merit','Renewal listing'],url:NSP,reason:'For eligible college/university students meeting the scheme’s board-merit, course, income and other criteria.',docs:['Class XII marksheet','Current college/university admission certificate','Family income certificate if required','Bank account details','Previous scholarship award/renewal details if renewing']},
+{id:23,name:'National Renewable Energy Fellowship Scheme',org:'Ministry of New and Renewable Energy',type:'Merit',course:'phd',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['Renewable Energy','Research','Fellowship'],url:NSP,reason:'Research/fellowship listing related to renewable energy; verify discipline, institution and current call conditions.',docs:['Research admission/registration proof','Academic transcripts and qualifying-degree certificates','Research proposal or supervisor details if required','Bank details','Current scheme-specific application documents']},
+{id:24,name:'Stipend Scheme for UG and PG Studies at Indian Statistical Institute (ISI)',org:'Ministry of Statistics and Programme Implementation',type:'Merit',course:'any',courses:['degree','pg'],gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['UG','PG','Statistics','ISI'],url:NSP,reason:'For eligible students in covered ISI undergraduate or postgraduate programmes; admission and programme-specific conditions apply.',docs:['ISI admission/registration proof','Qualifying examination marksheets','Identity proof','Bank details','Any programme-specific declaration or form']},
+{id:25,name:'ICAR National Talent Scholarship (NTS–UG)',org:'Department of Agricultural Research and Education',type:'Merit',course:'degree',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['UG','Agriculture','ICAR'],url:NSP,reason:'For eligible undergraduate agriculture/allied programme students; institution, admission and scheme rules apply.',docs:['ICAR/eligible programme admission proof','Class XII marksheet','Institute and course details','Bank details','Scheme-specific forms and declarations']},
+{id:26,name:'ICAR Post Graduate Scholarship (PGS)',org:'Department of Agricultural Research and Education',type:'Merit',course:'pg',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['PG','Agriculture','ICAR'],url:NSP,reason:'For eligible postgraduate students in covered agricultural and allied programmes; verify current admission and discipline criteria.',docs:['PG admission/registration proof','Bachelor’s degree and marksheets','Institute/course details','Bank details','Scheme-specific forms']},
+{id:27,name:'ICAR National Talent Scholarship (NTS–PG)',org:'Department of Agricultural Research and Education',type:'Merit',course:'pg',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['PG','Agriculture','ICAR'],url:NSP,reason:'For eligible postgraduate agricultural/allied students; check the current ICAR rules and participating institutions.',docs:['PG admission proof','Bachelor’s degree and marksheets','Institute/course details','Bank details','Scheme-specific forms and declarations']},
+{id:28,name:'ICAR Junior and Senior Research Fellowships (JRF/SRF)',org:'Department of Agricultural Research and Education',type:'Merit',course:'phd',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['Research','Agriculture','ICAR','Fellowship'],url:NSP,reason:'Research fellowship listing; current call, examination, discipline and eligibility must be confirmed.',docs:['Qualifying-degree certificates and transcripts','Entrance/selection result if required','Research admission or joining documents','Bank details','Current ICAR fellowship forms']},
+{id:29,name:'National Fellowship and Scholarship for Higher Education of ST Students',org:'Ministry of Tribal Affairs',type:'Merit',course:'degree',courses:['degree','pg','phd'],gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['ST','Higher Education','Fellowship'],url:NSP,reason:'For eligible ST students in covered higher-education programmes; scholarship and fellowship components have separate criteria.',docs:['ST certificate','Current admission/registration proof','Previous academic marksheets','Family income certificate if required','Bank details and scheme-specific forms']},
+{id:30,name:'Financial Support to Students of North Eastern Region for Higher Professional Courses (NEC Merit Scholarship)',org:'North Eastern Council, DoNER',type:'Merit',course:'degree',courses:['degree','pg'],gender:'any',state:'any',deadline:'2026-10-31',deadlineNote:'The current NSP listing mentions renewal; verify fresh-call status.',amount:'See official scheme',tags:['North East','Professional Courses','Renewal listing'],url:NSP,reason:'For eligible students from the North Eastern Region in covered professional courses; domicile, marks and course criteria apply.',docs:['North Eastern Region domicile certificate','Current course admission proof','Previous academic marksheets','Income certificate if required','Bank details and renewal records if applicable']},
+{id:31,name:'Prime Minister’s Scholarship Scheme for Ministry of Railways',org:'Ministry of Railways',type:'Merit',course:'degree',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['UG','Railway Families','Professional Courses'],url:NSP,reason:'For eligible wards/widows covered by the railway scheme; family-service status and approved course conditions apply.',docs:['Proof of eligible railway service/family relationship','Current admission proof','Qualifying marksheets','Bank details','Scheme-specific declaration and certificates']},
+{id:32,name:'Prime Minister’s Scholarship Scheme for Central Armed Police Forces and Assam Rifles',org:'Ministry of Home Affairs',type:'Merit',course:'degree',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['UG','CAPF','Assam Rifles','Service Families'],url:NSP,reason:'For eligible wards/widows covered by CAPF and Assam Rifles rules; service status, course and academic criteria apply.',docs:['Proof of eligible CAPF/Assam Rifles service and family relationship','Current admission proof','Qualifying examination marksheets','Bank details','Scheme-specific forms and certificates']},
+{id:33,name:'Prime Minister’s Scholarship Scheme for Wards of Police Personnel Martyred in Terror/Naxal Attacks',org:'Ministry of Home Affairs',type:'Merit',course:'degree',gender:'any',state:'any',deadline:'2026-10-31',amount:'See official scheme',tags:['UG','Police Families','Service Families'],url:NSP,reason:'For eligible wards of police personnel covered by the scheme; verify the qualifying service, course and admission rules.',docs:['Official proof of the covered service/death and family relationship','Current admission proof','Academic marksheets','Bank details','Scheme-specific forms']},
+{id:34,name:'Karnataka State Scholarship Portal (SSP) – Pre-Matric Department Schemes',org:'Government of Karnataka',type:'Welfare',course:'school',gender:'any',state:'Karnataka',deadline:null,amount:'Varies by department and scheme',tags:['Karnataka','School','Pre-Matric','State Scheme'],url:'https://ssp.postmatric.karnataka.gov.in/homepage.aspx',reason:'Entry point to Karnataka department-run pre-matric schemes. Available categories, classes and deadlines vary; check the official portal.',docs:['Student/school ID or SATS details where required','Identity and domicile details','Income and community certificates if applicable','Previous marksheet if required','Bank details and department-specific documents']},
+{id:35,name:'Karnataka State Scholarship Portal (SSP) – Post-Matric Department Schemes',org:'Government of Karnataka',type:'Welfare',course:'any',courses:['iti','diploma','degree','pg','phd'],gender:'any',state:'Karnataka',deadline:null,amount:'Varies by department and scheme',tags:['Karnataka','Post-Matric','ITI','Diploma','UG','PG','State Scheme'],url:'https://ssp.postmatric.karnataka.gov.in/homepage.aspx',reason:'Entry point to Karnataka post-matric schemes across eligible post-school courses. Category, course and deadline rules vary by department.',docs:['Current college/course admission proof','SSLC/previous qualifying marksheet and register number if required','Income/community certificate if applicable','Aadhaar/identity and bank details','E-attestation or department-specific documents if required']},
+{id:36,name:'INSPIRE Scholarship for Higher Education (SHE) – Basic and Natural Sciences',org:'Department of Science and Technology',type:'Merit',course:'degree',courses:['degree','pg'],gender:'any',state:'any',deadline:null,amount:'Check official programme notice',tags:['Science','UG','PG','INSPIRE'],url:'https://online-inspire.gov.in/',reason:'For eligible high-performing students entering covered basic/natural science courses; eligible subjects and the current application call must be checked.',docs:['Class XII marksheet','Class X marksheet/certificate for date of birth','Current eligible science-course admission proof','Prescribed institute endorsement','Eligibility/advisory note if applicable']},
+{id:37,name:'INSPIRE Fellowship for Doctoral Research',org:'Department of Science and Technology',type:'Merit',course:'phd',gender:'any',state:'any',deadline:null,amount:'Check current fellowship notice',tags:['Research','PhD','Science','INSPIRE'],url:'https://online-inspire.gov.in/',reason:'Research fellowship route for eligible doctoral candidates in covered science areas; check current call, age and qualification rules.',docs:['Qualifying-degree certificates and marksheets','Research admission/registration proof','Supervisor/institution details','Selection or eligibility documents','Bank details and prescribed fellowship forms']},
+{id:38,name:'Prime Minister’s Research Fellowship (PMRF)',org:'Ministry of Education',type:'Merit',course:'phd',gender:'any',state:'any',deadline:null,amount:'Check official PMRF notice',tags:['Research','PhD','Science','Engineering'],url:'https://pmrf.in/',reason:'Competitive fellowship for eligible doctoral research candidates at participating institutions; admission route and institute rules apply.',docs:['Eligible degree and academic transcripts','PhD admission/registration and participating-institute details','Research proposal or supervisor details if required','Selection/admission records','Bank details and PMRF forms']},
+{id:39,name:'UGC Junior Research Fellowship (NET-JRF)',org:'University Grants Commission',type:'Merit',course:'phd',gender:'any',state:'any',deadline:null,amount:'Check current UGC/NTA notice',tags:['Research','PhD','UGC','JRF'],url:'https://www.ugc.gov.in/Fellowship/stu_Fellowship1',reason:'For candidates who qualify the relevant NET-JRF/UGC-CSIR route and meet registration and institution requirements.',docs:['NET-JRF award/qualification record','Postgraduate degree and marksheets','PhD/MPhil registration or admission proof as required','Institution and supervisor details','Bank details and fellowship joining forms']},
+{id:40,name:'CSIR Junior Research Fellowship (JRF)',org:'Council of Scientific & Industrial Research',type:'Merit',course:'phd',gender:'any',state:'any',deadline:null,amount:'Check current CSIR-NET/JRF notice',tags:['Research','PhD','Science','CSIR'],url:'https://csirhrdg.res.in/Home/Index/1/Default/2666',reason:'Research fellowship route for eligible candidates through the applicable CSIR-NET process; current exam and fellowship guidelines apply.',docs:['CSIR-NET/JRF qualification record','Postgraduate degree and marksheets','Research admission/registration documents','Institution/supervisor details','Bank details and current CSIR forms']}
+,{id:41,name:'Maharashtra – Government of India Post-Matric Scholarship (SC)',org:'Maharashtra Social Justice & Special Assistance Department',type:'Welfare',course:'any',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','SC','Post-Matric','State Portal'],url:'https://mahadbt.maharashtra.gov.in/',reason:'MahaDBT lists this post-matric scheme for eligible SC students. Confirm current criteria and application window on the official portal.'}
+,{id:42,name:'Maharashtra – Post-Matric Tuition Fee and Examination Fee Freeship',org:'Maharashtra Social Justice & Special Assistance Department',type:'Welfare',course:'any',gender:'any',state:'Maharashtra',deadline:null,amount:'Eligible tuition/exam fee support; confirm scheme rules',tags:['Maharashtra','SC','Fee Support'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Fee-support scheme listed on MahaDBT; eligibility and benefit depend on the relevant rules.'}
+,{id:43,name:'Maharashtra – Maintenance Allowance for Students in Professional Courses',org:'Maharashtra Social Justice & Special Assistance Department',type:'Welfare',course:'degree',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','Professional Course','Maintenance'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Listed on MahaDBT for eligible students in professional courses; verify category, hostel and course requirements.'}
+,{id:44,name:'Maharashtra – Post-Matric Scholarship for Persons with Disabilities',org:'Government of Maharashtra',type:'Welfare',course:'any',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','Disability','Post-Matric'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Disability-related post-matric support is listed on MahaDBT. Confirm disability certification and course requirements.'}
+,{id:45,name:'Maharashtra – Vocational Training Fee Reimbursement for SC Students',org:'Maharashtra Social Justice & Special Assistance Department',type:'Welfare',course:'iti',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','SC','ITI','Vocational Training'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Vocational training fee reimbursement listing; check eligible training programmes and category rules.'}
+,{id:46,name:'Maharashtra – Post-Matric Scholarship Scheme for ST Students',org:'Maharashtra Tribal Development Department',type:'Welfare',course:'any',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','ST','Post-Matric'],url:'https://mahadbt.maharashtra.gov.in/',reason:'MahaDBT lists post-matric support for eligible ST students; verify income, course and other rules.'}
+,{id:47,name:'Maharashtra – Tuition Fee and Examination Fee Support for Tribal Students',org:'Maharashtra Tribal Development Department',type:'Welfare',course:'any',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','ST','Fee Support'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Fee support listed for eligible tribal students; confirm the current scheme guidelines.'}
+,{id:48,name:'Maharashtra – Vocational Education Fee Reimbursement for ST Students',org:'Maharashtra Tribal Development Department',type:'Welfare',course:'iti',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','ST','ITI','Vocational Training'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Vocational education/training fee support for eligible students; course and category rules apply.'}
+,{id:49,name:'Maharashtra – Rajarshi Chhatrapati Shahu Maharaj Shikshan Shulkh Shishyavrutti',org:'Maharashtra Directorate of Higher Education',type:'Merit/Welfare',course:'degree',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','UG','Fee Support','EBC'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Fee scholarship listed by Maharashtra Higher Education; check income, admission and course eligibility.'}
+,{id:50,name:'Maharashtra – Assistance to Meritorious Students Scholarship (Junior Level)',org:'Maharashtra Directorate of Higher Education',type:'Merit',course:'school',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','Merit','Junior College'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Merit scholarship listing; confirm qualifying exam, marks and eligible class on MahaDBT.'}
+,{id:51,name:'Maharashtra – Assistance to Meritorious Students Scholarship (Senior Level)',org:'Maharashtra Directorate of Higher Education',type:'Merit',course:'degree',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','Merit','Higher Education'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Merit scholarship listing for eligible higher-level study; check the official scheme rules.'}
+,{id:52,name:'Maharashtra – Eklavya Scholarship',org:'Maharashtra Directorate of Higher Education',type:'Merit',course:'pg',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','PG','Merit'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Postgraduate scholarship listing; confirm qualifying degree, marks, income and other conditions.'}
+,{id:53,name:'Maharashtra – State Government Open Merit Scholarship',org:'Maharashtra Directorate of Higher Education',type:'Merit',course:'degree',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','Open Merit','UG'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Open merit scholarship listing; eligibility depends on qualifying marks and current rules.'}
+,{id:54,name:'Maharashtra – Scholarship for Meritorious Students in Mathematics and Physics',org:'Maharashtra Directorate of Higher Education',type:'Merit',course:'degree',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','Science','Mathematics','Physics'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Subject-specific merit scholarship listing; check eligible subjects and academic criteria.'}
+,{id:55,name:'Maharashtra – Government Vidyaniketan Scholarship',org:'Government of Maharashtra',type:'Merit',course:'school',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','School','Merit'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Scholarship listing for eligible students; confirm the covered institutions and qualifying criteria.'}
+,{id:56,name:'Maharashtra – State Government Dakshina Adhichatra Scholarship',org:'Maharashtra Directorate of Higher Education',type:'Welfare',course:'pg',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','PG','Scholarship'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Listed higher-education support scheme; check current availability and rules.'}
+,{id:57,name:'Maharashtra – Government Research Adhichatra',org:'Maharashtra Directorate of Higher Education',type:'Merit',course:'phd',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','Research','Fellowship'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Research support listing; verify qualification, research level, institution and current call.'}
+,{id:58,name:'Maharashtra – Post-Matric Scholarship for OBC Students',org:'Maharashtra OBC, SEBC, VJNT & SBC Welfare Department',type:'Welfare',course:'any',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','OBC','Post-Matric'],url:'https://mahadbt.maharashtra.gov.in/',reason:'MahaDBT lists post-matric support for eligible OBC students; income and course rules apply.'}
+,{id:59,name:'Maharashtra – Post-Matric Scholarship for VJNT Students',org:'Maharashtra OBC, SEBC, VJNT & SBC Welfare Department',type:'Welfare',course:'any',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','VJNT','Post-Matric'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Post-matric support listing for eligible VJNT students; confirm current criteria.'}
+,{id:60,name:'Maharashtra – Post-Matric Scholarship for SBC Students',org:'Maharashtra OBC, SEBC, VJNT & SBC Welfare Department',type:'Welfare',course:'any',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','SBC','Post-Matric'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Post-matric support listing for eligible SBC students; confirm current criteria.'}
+,{id:61,name:'Maharashtra – State Minority Scholarship Part II (Higher Education)',org:'Maharashtra Minority Development Department',type:'Welfare',course:'degree',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','Minority','Higher Education'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Minority scholarship listing for eligible higher-education students; verify community and income rules.'}
+,{id:62,name:'Maharashtra – Minority Scholarship for Higher and Professional Courses',org:'Maharashtra Minority Development Department',type:'Welfare',course:'degree',gender:'any',state:'Maharashtra',deadline:null,amount:'See official scheme',tags:['Maharashtra','Minority','Professional Course'],url:'https://mahadbt.maharashtra.gov.in/',reason:'Listed support for eligible minority students in higher/professional courses; check the relevant directorate rules.'}
+,{id:63,name:'Maharashtra – Stipend for Government ITI Trainees (Craftsman Training Scheme)',org:'Maharashtra Skill Development, Employment & Entrepreneurship Department',type:'Welfare',course:'iti',gender:'any',state:'Maharashtra',deadline:null,amount:'Portal lists a ₹500/month stipend; confirm current availability',tags:['Maharashtra','ITI','Stipend','Vocational'],url:'https://mahadbt.maharashtra.gov.in/',reason:'MahaDBT lists a stipend for trainees in the Craftsman Training Scheme in Government ITIs; verify current terms.'}
+,{id:64,name:'Bihar Post-Matric Scholarship (BC/EBC and SC/ST routes)',org:'Government of Bihar',type:'Welfare',course:'any',gender:'any',state:'Bihar',deadline:null,amount:'See official scheme',tags:['Bihar','Post-Matric','BC','EBC','SC','ST'],url:'https://pmsonline.bihar.gov.in/2026-27/pms/pms_online/Default.aspx',reason:'Bihar’s official portal lists the 2026–27 application window as 15 July–30 September 2026; this window has passed, so check for a new notice or correction window before applying.',docs:['Aadhaar/identity proof','Income certificate','Caste certificate where applicable','10th certificate','Bonafide/admission proof','Fee receipt','Last marksheet','Photograph','Bank account seeded for DBT']}
+,{id:65,name:'Odisha State Scholarship Portal – Scheme Eligibility Search',org:'Government of Odisha',type:'Welfare',course:'any',gender:'any',state:'Odisha',deadline:null,amount:'Varies by selected scheme',tags:['Odisha','State Portal','Eligibility Search'],url:'https://scholarship.odisha.gov.in/website/check-eligibility',reason:'Official Odisha portal provides an eligibility checker that returns schemes based on student profile. This is a portal entry, not a single scholarship; select the specific scheme before applying.'}
+
+,{id:66,name:"Tata Capital Pankh Scholarship",org:"Tata Capital / partner foundation",type:'Private/Institutional',course:"any",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.tatacapital.com/",reason:"For eligible students in specified school and higher-education levels; check the current programme and application window."}
+,{id:67,name:"HDFC Bank Parivartan’s ECSS Programme",org:"HDFC Bank / ECSS",type:'Private/Institutional',course:"any",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.hdfcbank.com/personal/about-us/csr",reason:"Need-based support for eligible students facing financial hardship; course, marks, income and current call conditions apply."}
+,{id:68,name:"Reliance Foundation Undergraduate Scholarship",org:"Reliance Foundation",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.reliancefoundation.org/",reason:"For eligible first-year undergraduate students; selection and application dates vary by annual cycle."}
+,{id:69,name:"Reliance Foundation Postgraduate Scholarship",org:"Reliance Foundation",type:'Private/Institutional',course:"pg",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.reliancefoundation.org/",reason:"For eligible postgraduate students in selected future-oriented fields; check current fields and call."}
+,{id:70,name:"Kotak Kanya Scholarship",org:"Kotak Education Foundation / Kotak Mahindra Group",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.kotakeducation.org/",reason:"For eligible meritorious girl students entering professional undergraduate courses; marks, income and current call conditions apply."}
+,{id:71,name:"Kotak Junior Scholarship",org:"Kotak Education Foundation",type:'Private/Institutional',course:"school",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.kotakeducation.org/",reason:"Programme availability and city/class eligibility can vary; verify current call on the official foundation site."}
+,{id:72,name:"SBI Asha Scholarship Programme",org:"SBI Foundation",type:'Private/Institutional',course:"any",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.sbifoundation.in/",reason:"Merit- and need-based support for eligible students; covered class/course and institution criteria depend on the current edition."}
+,{id:73,name:"LIC HFL Vidyadhan Scholarship",org:"LIC Housing Finance / LIC HFL Foundation",type:'Private/Institutional',course:"any",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.lichousing.com/",reason:"Scholarship support across selected education stages in some editions; confirm current eligibility and application route."}
+,{id:74,name:"Sitaram Jindal Foundation Scholarship",org:"Sitaram Jindal Foundation",type:'Private/Institutional',course:"any",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.sitaramjindalfoundation.org/",reason:"Support for eligible students across specified classes and courses; marks, income and category rules apply."}
+,{id:75,name:"Foundation for Excellence Scholarship",org:"Foundation for Excellence",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://ffe.org/",reason:"Financial assistance for eligible low-income students in selected professional degree courses; check institution, marks and family-income criteria."}
+,{id:76,name:"FAEA Scholarship",org:"Foundation for Academic Excellence and Access",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.faeaindia.org/",reason:"Need-based assistance for eligible undergraduate students; current application call and category criteria must be checked."}
+,{id:77,name:"Santoor Scholarship",org:"Wipro Consumer Care and Lighting / Wipro Cares",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.santoorscholarships.com/",reason:"Historically supports eligible girls from selected states entering undergraduate study; confirm the current cycle and state coverage."}
+,{id:78,name:"L’Oréal India For Young Women in Science Scholarship",org:"L’Oréal India",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.loreal.com/en/india/",reason:"For eligible young women pursuing science-related higher education; confirm whether a current call is open."}
+,{id:79,name:"Colgate Keep India Smiling Scholarship",org:"Colgate-Palmolive India",type:'Private/Institutional',course:"any",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.colgate.com/en-in/keep-india-smiling",reason:"Programme editions may cover school, diploma, degree or sports pathways; verify the specific current category and dates."}
+,{id:80,name:"Aditya Birla Scholarship",org:"Aditya Birla Group",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.adityabirlascholars.net/",reason:"Restricted to eligible students at specified premier institutes and programmes; check the current selection rules."}
+,{id:81,name:"OP Jindal Engineering and Management Scholarship (OPJEMS)",org:"OP Jindal Group",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.opjems.com/",reason:"Merit scholarship for students at participating institutions; selection is institution- and year-specific."}
+,{id:82,name:"K.C. Mahindra Scholarships for Postgraduate Studies Abroad",org:"K.C. Mahindra Education Trust",type:'Private/Institutional',course:"pg",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.kcmet.org/",reason:"For eligible Indian students pursuing postgraduate studies abroad; application cycle and loan-scholarship conditions apply."}
+,{id:83,name:"Narotam Sekhsaria Scholarship Programme",org:"Narotam Sekhsaria Foundation",type:'Private/Institutional',course:"pg",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://pg.nsfoundation.co.in/",reason:"Interest-free loan scholarship for eligible postgraduate study, generally abroad; verify current programme terms."}
+,{id:84,name:"JN Tata Endowment for Higher Education",org:"JN Tata Endowment",type:'Private/Institutional',course:"pg",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://jntataendowment.org/",reason:"Loan scholarship for eligible Indian students pursuing higher studies abroad; not a grant; verify annual eligibility."}
+,{id:85,name:"Inlaks Shivdasani Scholarships",org:"Inlaks Shivdasani Foundation",type:'Private/Institutional',course:"pg",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.inlaksfoundation.org/",reason:"Competitive support for eligible postgraduate study abroad in covered disciplines and institutions; exclusions and current cycle apply."}
+,{id:86,name:"Infosys Foundation STEM Stars Scholarship",org:"Infosys Foundation",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.infosys.com/infosys-foundation/",reason:"Support programme for eligible women in STEM in participating institutions; verify current intake and conditions."}
+,{id:87,name:"Tata Trusts Education Grants and Scholarships",org:"Tata Trusts",type:'Private/Institutional',course:"any",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.tatatrusts.org/",reason:"Trust education support varies by programme, level and location; check current grant/scholarship notices."}
+,{id:88,name:"Mirae Asset Foundation Scholarship",org:"Mirae Asset Foundation",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.miraeassetmf.co.in/",reason:"Private scholarship opportunities may be offered through foundation initiatives; verify the active student programme before applying."}
+,{id:89,name:"Schaeffler India Hope Engineering Scholarship",org:"Schaeffler India",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.schaeffler.co.in/",reason:"Corporate education support may be limited to specified engineering students or locations; check current official announcements."}
+,{id:90,name:"Legrand Empowering Scholarship Programme",org:"Legrand India",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.legrand.co.in/",reason:"Historically supports eligible girls and students with disabilities in higher education; verify current categories and call."}
+,{id:91,name:"Ashirvad Scholarship Programme",org:"Ashirvad / CSR programme",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.ashirvad.com/",reason:"Potential corporate scholarship route; current availability and official application instructions must be verified."}
+,{id:92,name:"Amazon Future Engineer Scholarship (India programmes)",org:"Amazon India",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.amazonfutureengineer.in/",reason:"Technology education initiatives may include scholarships or learning support for selected students; check current programme availability."}
+,{id:93,name:"Google Generation Scholarship / India-eligible programmes",org:"Google",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://buildyourfuture.withgoogle.com/scholarships",reason:"Scholarship availability depends on the specific global programme, location and annual call; confirm India eligibility."}
+,{id:94,name:"Microsoft scholarships and student funding programmes",org:"Microsoft",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.microsoft.com/en-us/education/students",reason:"Funding opportunities vary by country, discipline and programme; check current India eligibility before applying."}
+,{id:95,name:"IEEE India Section / IEEE Foundation Student Scholarships",org:"IEEE / IEEE Foundation",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.ieee.org/",reason:"Awards and scholarships vary by society, region and discipline; confirm eligibility and active call."}
+,{id:96,name:"Inspire Scholarship for Higher Education (SHE)",org:"Department of Science and Technology, Government of India",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.online-inspire.gov.in/",reason:"Government scholarship for eligible students in basic and natural sciences; check the current call and qualifying criteria."}
+,{id:97,name:"INSPIRE Fellowship",org:"Department of Science and Technology, Government of India",type:'Private/Institutional',course:"phd",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.online-inspire.gov.in/",reason:"Research fellowship route for eligible doctoral candidates in covered science disciplines; check current call."}
+,{id:98,name:"UGC Junior Research Fellowship (JRF)",org:"University Grants Commission / NTA",type:'Private/Institutional',course:"phd",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://ugcnet.nta.ac.in/",reason:"Eligibility and award depend on qualifying UGC-NET and applicable rules; not a continuously open direct application."}
+,{id:99,name:"CSIR Junior Research Fellowship (JRF)",org:"CSIR / NTA",type:'Private/Institutional',course:"phd",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://csirnet.nta.ac.in/",reason:"Science research fellowship route through the applicable CSIR-UGC NET process; check the current exam notice."}
+,{id:100,name:"National Board for Higher Mathematics (NBHM) Scholarships",org:"Department of Atomic Energy / NBHM",type:'Private/Institutional',course:"pg",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://nbhm.dae.gov.in/",reason:"Mathematics scholarships and fellowships depend on current examination and programme notices."}
+,{id:101,name:"Azim Premji Foundation Fellowship / Education Support",org:"Azim Premji Foundation",type:'Private/Institutional',course:"any",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://azimpremjiuniversity.edu.in/",reason:"Programmes may include scholarships or financial aid at specific institutions; verify the course and current application details."}
+,{id:102,name:"Ashoka University Financial Aid and Young India Fellowship Aid",org:"Ashoka University",type:'Private/Institutional',course:"pg",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.ashoka.edu.in/",reason:"Institution-specific financial aid and fellowship support; admission and aid rules apply."}
+,{id:103,name:"Shiv Nadar University Financial Aid and Scholarships",org:"Shiv Nadar University",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.snu.edu.in/",reason:"Institution-specific scholarships and financial aid; course, admission, merit and need criteria apply."}
+,{id:104,name:"Manipal Academy of Higher Education Scholarships",org:"MAHE",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.manipal.edu/",reason:"Institution-specific merit and need scholarships; campus, programme and admission rules vary."}
+,{id:105,name:"Vellore Institute of Technology Scholarships",org:"VIT",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://vit.ac.in/",reason:"Institution-specific merit scholarships and fee waivers; check the current admission year and programme rules."}
+,{id:106,name:"BITS Pilani Merit and Merit-cum-Need Scholarships",org:"BITS Pilani",type:'Private/Institutional',course:"degree",gender:'any',state:'any',deadline:null,amount:'Check official programme',tags:['Private','Corporate/Foundation','Verify current call'],url:"https://www.bits-pilani.ac.in/",reason:"Institution-specific merit and need-based financial aid; admission, marks and family-income conditions apply."}
+];
+
+let profile=JSON.parse(localStorage.getItem('sa_profile')||'null')||{name:'',course:'degree',year:'1',branch:'',state:'Karnataka',gender:'',category:'',income:'',disability:false};
+if(!['preprimary','school','iti','diploma','degree','pg','phd'].includes(profile.course)){profile.course=profile.course==='undergraduate'?'degree':profile.course==='postgraduate'?'pg':'degree';}
+let saved=JSON.parse(localStorage.getItem('sa_saved')||'[]');
+let currentUser=null;
+
+const $=s=>document.querySelector(s);
+function saveLocal(){localStorage.setItem('sa_profile',JSON.stringify(profile));localStorage.setItem('sa_saved',JSON.stringify(saved));}
+function days(d){return Math.ceil((new Date(d+'T23:59:59')-new Date())/86400000)}
+function matches(s){
+  const levels=s.courses||(s.course==='any'?['preprimary','school','iti','diploma','degree','pg','phd']:[s.course]);
+  if(!levels.includes(profile.course))return false;
+  if(s.gender!=='any'&&profile.gender&&s.gender!==profile.gender)return false;
+  if(s.tags.some(x=>['SC','OBC','EBC','DNT','ST'].includes(x))&&profile.category&&!s.tags.includes(profile.category))return false;
+  if(s.tags.includes('Disability')&&!profile.disability)return false;
+  if(s.state&&s.state!=='any'&&profile.state&&s.state.toLowerCase()!==profile.state.toLowerCase())return false;
+  return true;
+}
+function card(s){
+  let d=days(s.deadline),match=matches(s);
+  const docs=s.docs||[
+    'Student photograph and identity proof (as specified by the scheme)',
+    'Current admission/enrolment proof or bonafide certificate',
+    'Previous class marksheet or academic record',
+    'Bank account details/passbook, if required',
+    'Income certificate, if the scheme has an income limit',
+    'Caste/community, domicile, or disability certificate only if applicable to the scheme',
+    'Fee receipt and any scheme-specific form/certificate, if required'
+  ];
+  return `<article class="card sch"><h3>${s.name}</h3><div class="muted">${s.org}</div><div class="chips">${s.tags.map(x=>`<span class="chip">${x}</span>`).join('')} ${match?'<span class="chip match">✓ Possible match — verify eligibility</span>':''}</div><div class="deadline">📅 ${s.deadline?(d>=0?`Listed deadline: ${new Date(s.deadline+'T12:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})} · ${d} day${d===1?'':'s'} left`:`Listed deadline: ${new Date(s.deadline+'T12:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})} (check for extensions/renewal)`):'Check the official portal for the current deadline'}${s.deadlineNote?`<div class="muted small">${s.deadlineNote}</div>`:''}</div><div class="muted small">${s.amount}</div><details class="docs-panel"><summary>📄 Documents needed for this scholarship</summary><p class="small muted">Preparation checklist only. The exact required documents depend on the scheme and may change. Confirm the official scheme instructions before applying.</p><ul>${docs.map(x=>`<li>${x}</li>`).join('')}</ul><p class="small"><b>Tip:</b> Keep clear scans/photos ready, but upload documents only on the official application portal.</p></details><div class="actions"><button class="btn light" onclick="toggleSave(${s.id})">${saved.includes(s.id)?'★ Saved':'☆ Save'}</button><button class="btn primary" onclick="window.open('${s.url}','_blank','noopener')">Official site ↗</button></div></article>`
+}
+function home(){
+  let ms=scholarships.filter(matches);
+  let loginNotice=currentUser?`<div class="notice signed">✓ Signed in as ${currentUser.displayName||currentUser.email}</div>`:`<div class="notice">Sign in with Google to keep your profile available across devices.</div>`;
+  $('#home').innerHTML=`<div class="hero"><h1>Scholarships that match you.</h1><p>From pre-primary and school to ITI, diploma, college, postgraduate and research, set your education profile to discover possible scholarships.</p><button class="btn light" onclick="show('profile')">Complete my profile →</button></div>${loginNotice}<div class="grid"><div class="stat"><span class="muted">Possible matches</span><b>${ms.length}</b></div><div class="stat"><span class="muted">Saved</span><b>${saved.length}</b></div></div><div class="section"><h2>For you</h2><span class="muted small">Scholarship discovery data</span></div>${ms.length?ms.map(card).join(''):`<div class="card empty"><b>Complete your profile</b><p class="muted">Add your details to improve matching.</p></div>`}<div class="card small muted">Always verify eligibility, amount and deadline on the official scholarship portal before applying. Pre-primary-specific nationwide schemes are limited in this directory; also ask your school and state education/welfare office about local support.</div>`
+}
+function all(){
+  let q=($('#q')?.value||'').toLowerCase();
+  let arr=scholarships.filter(s=>(s.name+s.org+s.tags.join(' ')).toLowerCase().includes(q));
+  $('#all').innerHTML=`<input id="q" class="search" placeholder="Search scholarships…" value="${q}" oninput="all()"><div class="notice">India master discovery directory: national schemes, fellowships, state/UT portal links and state-specific entry points. This is a curated directory, not a live feed or a guarantee that every scheme has been individually catalogued. Deadlines and fresh/renewal status vary; confirm each scheme on its official source.</div><div class="section"><h2>${arr.length} scholarships and support schemes</h2></div>${arr.map(card).join('')}`
+}
+function stateDirectory(){
+  const selected=$('#stateFilter')?.value||'all';
+  const query=($('#stateQuery')?.value||'').toLowerCase().trim();
+  const items=statePortals.filter(x=>(selected==='all'||x[0]===selected)&&(!query||(x[0]+' '+x[2]).toLowerCase().includes(query)));
+  $('#states').innerHTML=`<div class="hero"><h1>State & UT Scholarships</h1><p>Explore scholarship listings and official portals across all 28 states and 8 Union Territories.</p></div><div class="notice">Official sources only. Where a dedicated portal link is not listed here, use the National Scholarship Portal's State Scheme directory and select the relevant state/UT. Schemes, application windows and eligibility change; verify details before applying.</div><div class="state-filters"><select id="stateFilter" onchange="stateDirectory()"><option value="all">All states & UTs</option>${statePortals.map(x=>`<option value="${x[0]}" ${selected===x[0]?'selected':''}>${x[0]}</option>`).join('')}</select><input id="stateQuery" value="${query.replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" placeholder="Search state or portal…" oninput="stateDirectory()"></div><div class="section"><h2>${items.length} state/UT portals</h2></div><div class="state-grid">${items.map(x=>`<article class="state-card"><h3>${x[0]}</h3><p>${x[2]}</p>${x[1]?`<a href="${x[1]}" target="_blank" rel="noopener">State portal ↗</a>`:''}<a href="${STATE_SCHEME_DIRECTORY}" target="_blank" rel="noopener">NSP State Schemes ↗</a><a href="${GOV_SERVICES}" target="_blank" rel="noopener">Govt services directory ↗</a></article>`).join('')}</div><p class="small muted">This is a portal directory, not a claim that every scholarship from every state has been individually catalogued. Check domicile, class/course, income, category, fresh/renewal status and current deadlines on the official portal.</p>`;
+}
+function savedPage(){
+  let arr=scholarships.filter(s=>saved.includes(s.id));
+  $('#saved').innerHTML=`<div class="section"><h2>Saved scholarships</h2></div>${arr.length?arr.map(card).join(''):`<div class="card empty"><b>No saved scholarships yet</b><p class="muted">Tap Save on a scholarship you want to remember.</p></div>`}`
+}
+function profilePage(){
+  let p=profile;
+  const avatars=['🧑‍💻','👨‍🎓','👩‍🎓','🧑‍🔬','👨‍💼','👩‍💼','🧑‍🚀','🦸','🎓','🌟'];
+  $('#profile').innerHTML=`<div class="card"><div class="profile-head"><div class="avatar">${p.avatar||'🎓'}</div><div><h2>My profile</h2><p class="muted">${currentUser?'This profile is linked to your Google account.':'Sign in to sync your profile across devices.'}</p></div></div><div class="form">
+  <div class="field"><label>Choose your avatar</label><div class="avatar-row">${avatars.map(a=>`<button type="button" class="avatar-choice ${p.avatar===a?'selected':''}" onclick="chooseAvatar('${a}')">${a}</button>`).join('')}</div></div>
+  <div class="field"><label>Name</label><input id="name" value="${p.name||''}" placeholder="Your name"></div>
+  <div class="two"><div class="field"><label>Education level</label><select id="course" onchange="updateYearOptions()"><option value="preprimary" ${p.course==='preprimary'?'selected':''}>Pre-primary (Nursery/LKG/UKG)</option><option value="school" ${p.course==='school'?'selected':''}>School (Class 1–12)</option><option value="iti" ${p.course==='iti'?'selected':''}>ITI / Vocational</option><option value="diploma" ${p.course==='diploma'?'selected':''}>Diploma</option><option value="degree" ${p.course==='degree'?'selected':''}>Undergraduate / Degree</option><option value="pg" ${p.course==='pg'?'selected':''}>Postgraduate / Master's</option><option value="phd" ${p.course==='phd'?'selected':''}>PhD / Research</option></select></div><div class="field"><label>Class / year</label><select id="year"></select></div></div>
+  <div class="two"><div class="field"><label>Branch</label><input id="branch" value="${p.branch||''}" placeholder="CSE"></div><div class="field"><label>State</label><input id="state" value="${p.state||''}" placeholder="Karnataka"></div></div>
+  <div class="two"><div class="field"><label>Gender (optional)</label><select id="gender"><option value="">Prefer not to say</option><option value="male" ${p.gender==='male'?'selected':''}>Male</option><option value="female" ${p.gender==='female'?'selected':''}>Female</option></select></div><div class="field"><label>Category (optional)</label><select id="category"><option value="">Not specified</option><option ${p.category==='SC'?'selected':''}>SC</option><option ${p.category==='ST'?'selected':''}>ST</option><option ${p.category==='OBC'?'selected':''}>OBC</option><option ${p.category==='EBC'?'selected':''}>EBC</option><option ${p.category==='DNT'?'selected':''}>DNT</option></select></div></div>
+  <label><input type="checkbox" id="disability" ${p.disability?'checked':''}> I may qualify for disability-specific scholarships</label>
+  <button class="btn primary" onclick="saveProfile()">Save profile</button>
+  <button class="btn gray" onclick="notifyMe()">Enable notifications 🔔</button>
+  ${currentUser?'<button class="btn gray" onclick="signOutAccount()">🚪 Sign out</button>':''}
+  </div></div>
+  <div class="card small muted" style="margin-top:12px">Your Google account identifies your profile. Scholarship eligibility must always be verified on the official scheme page.</div>`
+  updateYearOptions();
+}
+function updateYearOptions(){
+  const course=$('#course')?.value, select=$('#year'); if(!select)return;
+  const choices=course==='preprimary'?['Nursery','LKG','UKG']:course==='school'?Array.from({length:12},(_,i)=>String(i+1)):course==='iti'?['1','2']:course==='diploma'?['1','2','3']:course==='degree'?['1','2','3','4','5']:course==='pg'?['1','2','3']:['Research'];
+  const current=String(profile.year||choices[0]);
+  select.innerHTML=choices.map(v=>`<option value="${v}" ${v===current?'selected':''}>${course==='school'?'Class '+v:course==='preprimary'?v:course==='phd'?'Research / PhD year '+v:'Year '+v}</option>`).join('');
+  if(!choices.includes(current))select.value=choices[0];
+}
+function chooseAvatar(a){profile.avatar=a;profilePage()}
+async function saveProfile(){
+  profile={...profile,avatar:profile.avatar||'🎓',name:$('#name').value.trim(),course:$('#course').value,year:$('#year').value,branch:$('#branch').value.trim(),state:$('#state').value.trim(),gender:$('#gender').value,category:$('#category').value,income:'',disability:$('#disability').checked};
+  saveLocal();
+  if(currentUser){
+    try{
+      await setDoc(doc(db,'users',currentUser.uid),{profile,displayName:currentUser.displayName||'',email:currentUser.email||'',updatedAt:new Date().toISOString()},{merge:true});
+      alert('Profile saved to your account ✓');
+    }catch(e){
+      console.error(e);
+      alert('Profile saved on this device, but Firebase could not save it yet. Check Firestore Rules.');
+    }
+  }else{
+    alert('Profile saved on this device. Sign in with Google to sync it across devices.');
+  }
+  render();show('home');
+}
+function toggleSave(id){saved.includes(id)?saved=saved.filter(x=>x!==id):saved.push(id);saveLocal();render()}
+async function notifyMe(){
+  if(!('Notification'in window)){alert('Notifications are not supported in this browser. Try Chrome.');return}
+  let p=await Notification.requestPermission();
+  if(p==='granted')new Notification('ScholarAlert is on 🔔',{body:'Notification permission is enabled. Automatic scholarship alerts will be connected in the next notification setup.'});
+  else alert('Notification permission was not granted.');
+}
+function handleAccount(){
+  if(currentUser){
+    show('profile');
+    profilePage();
+    window.scrollTo({top:0,behavior:'smooth'});
+    return;
+  }
+  signInWithGoogle();
+}
+async function signInWithGoogle(){
+  try{
+    await signInWithPopup(auth,googleProvider);
+  }catch(e){
+    console.error(e);
+    alert('Google sign-in could not start: '+(e.message||e.code));
+  }
+}
+async function signOutAccount(){
+  try{
+    await signOut(auth);
+    alert('Signed out.');
+  }catch(e){
+    console.error(e);
+    alert('Could not sign out: '+(e.message||e.code));
+  }
+}
+async function loadCloudProfile(user){
+  try{
+    const snap=await getDoc(doc(db,'users',user.uid));
+    if(snap.exists()&&snap.data().profile){
+      profile={...profile,...snap.data().profile};
+      saveLocal();
+    }
+  }catch(e){console.warn('Could not load Firestore profile:',e)}
+}
+function updateAccountButton(){
+  const b=$('#accountBtn');
+  if(currentUser)b.innerHTML=`<span class="account-avatar">${profile.avatar||'🎓'}</span>${profile.name||currentUser.displayName||currentUser.email||'Account'}`;
+  else b.textContent='🔐 Sign in';
+}
+function show(page){
+  document.querySelectorAll('main>section').forEach(x=>x.classList.add('hide'));
+  $('#'+page).classList.remove('hide');
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.page===page));
+  if(page==='home')home();if(page==='all')all();if(page==='states')stateDirectory();if(page==='saved')savedPage();if(page==='profile')profilePage();
+}
+function render(){home();all();stateDirectory();savedPage();profilePage();updateAccountButton()}
+document.querySelectorAll('.tab').forEach(x=>x.onclick=()=>show(x.dataset.page));
+
+
+onAuthStateChanged(auth,async user=>{
+  currentUser=user;
+  if(user) await loadCloudProfile(user);
+  render();
+});
+
+Object.assign(window,{show,all,stateDirectory,savedPage,profilePage,saveProfile,toggleSave,notifyMe,handleAccount,chooseAvatar});
+render();
+</script>
+</body>
+</html>
